@@ -9,7 +9,7 @@ const request = axios.create({
 // 创建 axios 实例
 const riotapi = axios.create({
     // API 请求的默认前缀
-    baseURL: 'http://ddragon.leagueoflegends.com/cdn/12.18.1/data/zh_CN'
+    baseURL: 'http://ddragon.leagueoflegends.com/cdn/14.15.1/data/zh_CN'
 })
 
 const localriotapi = axios.create({

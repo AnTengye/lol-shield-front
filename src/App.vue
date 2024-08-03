@@ -11,7 +11,7 @@
                     <template #description>
                         <p class="custom-description">召唤师等级：{{ userInfo.level }}</p>
                         <p class="custom-description">近20场胜率：52%</p>
-                        <p class="custom-description">单双排段位：不屈白银</p>
+                        <p class="custom-description">单双段位：{{ userInfo.rank }}</p>
                     </template>
                 </a-card-meta>
             </a-card>
@@ -55,6 +55,7 @@ import { defineComponent, ref, reactive, onMounted, computed } from 'vue';
 import { getVersion, getUser } from '@/api/bog'
 import { getProfileIcon } from '@/api/localriot'
 import { connectSocket } from './websocket'
+import dicts from '@/model/dicts/index'
 
 import {
     CheckCircleOutlined,
@@ -78,6 +79,7 @@ export default defineComponent({
             name: '召唤师#99999',
             icon: '',
             level: 30,
+            rank: '暂无数据'
         });
         onMounted(async () => {
             getVersion().then(res => {
@@ -85,10 +87,13 @@ export default defineComponent({
                 status.version = res.data.version;
             })
         })
+        const rank = dicts.getDict('rank')
+        console.log('rank', rank)
         return {
             status,
             userInfo,
             selectedKeys: ref(['1']),
+            rank
         };
     },
     computed: {
@@ -110,6 +115,9 @@ export default defineComponent({
                     this.userInfo.icon = import.meta.env.VITE_BACK_URL + '/riot/profile-icons/' + res.data.profileIconId + '.jpg'
                     this.userInfo.name = res.data.gameName + '#' + res.data.tagLine
                     this.userInfo.level = res.data.summonerLevel
+                    if (res.data.tier !== 'NA') {
+                        this.userInfo.rank = this.rank[res.data.tier] + res.data.division
+                    }
                 })
             } else if (this.online === 2) {
                 this.status.color = 'processing'
