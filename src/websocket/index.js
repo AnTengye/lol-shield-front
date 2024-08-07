@@ -28,7 +28,9 @@ export const connectSocket = () => {
     const store = useStore();
     socket.onmessage = function (msg) {
         console.log("onmessage", msg);
-        store.commit('ws/setWsRes', JSON.parse(msg.data ?? '{}'));
+        if (store) {
+            store.commit('ws/setWsRes', JSON.parse(msg.data ?? '{}'));
+        }
     };
     socket.onopen = function () { //連線(onopen)
         /*

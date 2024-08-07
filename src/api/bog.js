@@ -37,3 +37,19 @@ export function getUser() {
         }
     })
 }
+
+export function getGameList(uuid) {
+    return request.get('/history/' + uuid, {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    })
+}
+
+export function getGameDetail(gameId) {
+    return request.get('/game/' + gameId, {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    })
+}

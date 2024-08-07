@@ -6,11 +6,6 @@ const request = axios.create({
     // API 请求的默认前缀
     baseURL: import.meta.env.VITE_BACK_URL + '/v1'
 })
-// 创建 axios 实例
-const riotapi = axios.create({
-    // API 请求的默认前缀
-    baseURL: 'http://ddragon.leagueoflegends.com/cdn/14.15.1/data/zh_CN'
-})
 
 const localriotapi = axios.create({
     // API 请求的默认前缀
@@ -31,9 +26,6 @@ request.interceptors.response.use((response) => {
     return response.data
 }, errorHandler)
 
-riotapi.interceptors.response.use((response) => {
-    return response.data
-}, errorHandler)
 
 localriotapi.interceptors.response.use((response) => {
     return response.data
@@ -42,7 +34,7 @@ localriotapi.interceptors.response.use((response) => {
 const installer = {
     vm: {},
     install(Vue) {
-        Vue.use(VueAxios, request, riotapi, localriotapi)
+        Vue.use(VueAxios, request, localriotapi)
     }
 }
 
@@ -51,6 +43,5 @@ export default request
 export {
     installer as VueAxios,
     request,
-    riotapi as riotapi,
     localriotapi
 }

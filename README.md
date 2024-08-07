@@ -1,5 +1,5 @@
-# Vue 3 + Vite
+# 英雄联盟-护卫盾
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 开发计划
+1. 游戏状态检索机制优化
+2. 战绩查询功能添加

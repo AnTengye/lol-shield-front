@@ -22,8 +22,7 @@
         </a-layout-sider>
         <a-layout>
             <a-layout-header>
-                <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="horizontal"
-                    :style="{ lineHeight: '64px' }">
+                <a-menu :selectedKeys="[$route.path]" theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }">
                     <a-menu-item :disabled="true" style="width: 200px;">
                         <div>
                             状态：
@@ -37,8 +36,9 @@
                             </a-tag>
                         </div>
                     </a-menu-item>
-                    <a-menu-item key="1"><router-link to="/">基础配置</router-link></a-menu-item>
-                    <a-menu-item key="2"><router-link to="/welcomee">对局</router-link></a-menu-item>
+                    <a-menu-item key="/"><router-link to="/">基础配置</router-link></a-menu-item>
+                    <a-menu-item key="/rank"><router-link to="/rank">战绩</router-link></a-menu-item>
+                    <a-menu-item key="/detail"><router-link to="/detail">对局小助手</router-link></a-menu-item>
                 </a-menu>
             </a-layout-header>
             <a-layout-content style="padding: 0 0px">
@@ -51,12 +51,10 @@
     </a-layout>
 </template>
 <script>
-import { defineComponent, ref, reactive, onMounted, computed } from 'vue';
+import { defineComponent, ref, reactive, onMounted } from 'vue';
 import { getVersion, getUser } from '@/api/bog'
-import { getProfileIcon } from '@/api/localriot'
 import { connectSocket } from './websocket'
 import dicts from '@/model/dicts/index'
-
 import {
     CheckCircleOutlined,
     SyncOutlined,
@@ -83,16 +81,15 @@ export default defineComponent({
         });
         onMounted(async () => {
             getVersion().then(res => {
-                console.log(res)
                 status.version = res.data.version;
             })
         })
+
         const rank = dicts.getDict('rank')
-        console.log('rank', rank)
         return {
             status,
             userInfo,
-            selectedKeys: ref(['1']),
+            // selectedKeys: ref(['1']),
             rank
         };
     },
@@ -111,8 +108,7 @@ export default defineComponent({
                 this.status.online = '已连接客户端'
                 // 获取用户信息
                 getUser().then(res => {
-                    console.log(res)
-                    this.userInfo.icon = import.meta.env.VITE_BACK_URL + '/riot/profile-icons/' + res.data.profileIconId + '.jpg'
+                    this.userInfo.icon = import.meta.env.VITE_BACK_URL + '/riot/v1/profile-icons/' + res.data.profileIconId + '.jpg'
                     this.userInfo.name = res.data.gameName + '#' + res.data.tagLine
                     this.userInfo.level = res.data.summonerLevel
                     if (res.data.tier !== 'NA') {

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import SettingPage from '../views/SettingFrom.vue';
-import WelcomePagee from '../views/SettingTest.vue';
+import RankList from '../views/RankList.vue';
+import RankDetail from '../views/RankDetail.vue';
 
 export default createRouter({
     history: createWebHistory(),
@@ -9,19 +10,24 @@ export default createRouter({
             path: '/',
             name: 'index',
             meta: { title: 'Shield' },
-            //   redirect: '/welcome',
             children: [
                 {
                     path: '/',
                     name: 'Shield',
-                    meta: { title: '欢迎', icon: 'icon-icon-test' },
+                    meta: { title: '配置', icon: 'icon-icon-test' },
                     component: SettingPage,
                 },
                 {
-                    path: '/welcomee',
-                    name: 'welcomee',
-                    meta: { title: '欢迎', icon: 'icon-icon-test' },
-                    component: WelcomePagee,
+                    path: '/rank',
+                    name: 'Rank',
+                    meta: { title: '战绩', icon: 'icon-icon-test' },
+                    component: RankList,
+                },
+                {
+                    path: '/detail',
+                    name: 'RankDetail',
+                    meta: { title: '对局详情', icon: 'icon-icon-test' },
+                    component: RankDetail,
                 },
             ],
         },
