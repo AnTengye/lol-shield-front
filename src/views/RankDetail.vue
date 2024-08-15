@@ -1,119 +1,115 @@
 <template>
-    <a-row>
-        <a-col style="background-color: bisque;" :span="6">col-12</a-col>
-        <a-col :span="18">
-            <a-row class="fade-total-background" style="height: 32px;" justify="space-around">
-                <a-col class="justift-center-container" :span="2">
-                    <div>开始时间：{{ baseGameData.createTime }}</div>
-                </a-col>
-                <a-col class="justift-center-container" :span="2">
-                    <div>游戏模式：{{ baseGameData.queueId }}</div>
-                </a-col>
-                <a-col class="justift-center-container" :span="2">
-                    <div>游戏时长：{{ baseGameData.gameDuration }}min</div>
-                </a-col>
-            </a-row>
-            <a-row v-for="team in teamInfo">
-                <a-col :class="backgroundColor(team.teamId, baseGameData.winTeamId)" :span="12">
-                    <a-row style="height: 32px;" justify="space-around">
-                        <a-col class="justift-center-container" :span="8">
-                            <div class="defeat" v-if="baseGameData.winTeamId !== team.teamId">失败</div>
-                            <div class="victory" v-else>胜利</div>
-                        </a-col>
-                        <a-col class="justift-center-container" :span="8">
-                            <div style="font-size: 18px;"><icon-font :style="{ fontSize: '24px' }"
-                                    type="icon-caidanlan-xiaoshou-jingzhengduishou" />{{ team.kills }}
-                            </div>
-                        </a-col>
-                        <a-col class="justift-center-container" :span="8">
-                            <div style="font-size: 18px;"><icon-font :style="{ fontSize: '20px' }"
-                                    type="icon-jinbi" />{{ (team.goldEarned / 1000).toFixed(1) }}
-                            </div>
-                        </a-col>
-                    </a-row>
-                    <a-row v-for="item in team.data" :key="item.puuid">
-                        <a-col :span="3" class="justift-center-container">
-                            <a-badge class="badge-level" :count="item.champLevel" :offset="[-8, 35]" color="orange">
-                                <a-avatar shape="square" :src="item.championIcon" size="large" alt="空"></a-avatar>
-                            </a-badge>
-                            <p style="margin: 32px 0 0 0;font-size: 16px;">{{ item.kills }}-{{ item.deaths }}-{{
-                                item.assists }}</p>
-                        </a-col>
-                        <a-col :span="4" class="justift-center-container">
-                            <a-tooltip>
-                                <template #title>{{ item.gameName }}#{{ item.tagLine }}</template>
-                                <div class="text-overflow-container" style="font-size: 16px;">{{ item.gameName }}#{{
-                                    item.tagLine }}</div>
-                            </a-tooltip>
-                            <!-- <p><icon-font :style="{ fontSize: '16px' }" type="icon-jinbi" />19.6k</p> -->
-                            <!-- <p><icon-font :style="{ fontSize: '16px' }" type="icon-jinbi" />19.6k</p> -->
-                        </a-col>
-                        <a-col :span="2" class="justift-center-container">
-                            <a-avatar size="large" shape="square" :src="getAssetsFile('rank/gold.png')"
-                                alt="空"></a-avatar>
-                        </a-col>
-                        <a-col :span="15" class="justift-center-container">
-                            <a-row class="justift-left-element">
-                                <a-col style="text-align: right;" :span="3">
-                                    <a-avatar class="small-items-container" :src="item.spell1Icon" alt="空"></a-avatar>
-                                    <a-avatar class="small-items-container" :src="item.spell2Icon" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item0" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item1" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item2" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item3" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item4" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item5" alt="空"></a-avatar>
-                                </a-col>
-                                <a-col :span="3">
-                                    <a-avatar class="square" shape="square" :src="item.item6" alt="空"></a-avatar>
-                                </a-col>
-                            </a-row>
-                        </a-col>
-                    </a-row>
-                </a-col>
-                <!-- <a-col :span="2"></a-col> -->
-                <!-- <a-col class="fade-green-background" :span="12">
-                </a-col> -->
-            </a-row>
-        </a-col>
-    </a-row>
+    <a-spin :spinning="initLoading">
+        <a-row v-if="props.gameId !== 0" class="fade-total-background" style="height: 32px;" justify="space-around">
+            <a-col class="justift-center-container" :span="4">
+                <div>开始时间：{{ baseGameData.createTime }}</div>
+            </a-col>
+            <a-col class="justift-center-container" :span="4">
+                <div>游戏模式：{{ baseGameData.queueId }}</div>
+            </a-col>
+            <a-col class="justift-center-container" :span="4">
+                <div>游戏时长：{{ baseGameData.gameDuration }}min</div>
+            </a-col>
+        </a-row>
+        <a-row v-for="team in teamInfo">
+            <a-col :class="backgroundColor(team.teamId, baseGameData.winTeamId)" :span="12">
+                <a-row style="height: 30px;" justify="space-around">
+                    <a-col class="justift-center-container" :span="8">
+                        <div class="defeat" v-if="baseGameData.winTeamId !== team.teamId">失败</div>
+                        <div class="victory" v-else>胜利</div>
+                    </a-col>
+                    <a-col class="justift-center-container" :span="8">
+                        <div style="font-size: 18px;"><icon-font :style="{ fontSize: '24px' }"
+                                type="icon-caidanlan-xiaoshou-jingzhengduishou" />{{ team.kills }}
+                        </div>
+                    </a-col>
+                    <a-col class="justift-center-container" :span="8">
+                        <div style="font-size: 18px;"><icon-font :style="{ fontSize: '20px' }" type="icon-jinbi" />{{
+                            (team.goldEarned / 1000).toFixed(1) }}k
+                        </div>
+                    </a-col>
+                </a-row>
+                <a-row v-for="item in team.data" :key="item.puuid">
+                    <a-col :span="4" class="justift-center-container">
+                        <a-badge class="badge-level" :count="item.champLevel" :offset="[-8, 35]" color="orange">
+                            <a-avatar shape="square" :src="item.championIcon" size="large" alt="空"></a-avatar>
+                        </a-badge>
+                        <p style="margin: 32px 0 0 0;font-size: 16px;">{{ item.kills }}-{{ item.deaths }}-{{
+                            item.assists }}</p>
+                    </a-col>
+                    <a-col :span="4" class="justift-center-container">
+                        <a-tooltip>
+                            <template #title>{{ item.gameName }}</template>
+                            <div class="text-overflow-container"
+                                :style="{ fontSize: '16px', color: isCurrentUser(item.puuid) ? 'red' : 'inherit', fontWeight: isCurrentUser(item.puuid) ? 'bold' : 'normal' }"
+                                @click="userClick(item.puuid)">{{ item.gameName }}</div>
+                        </a-tooltip>
+                    </a-col>
+                    <a-col :span="2" class="justift-center-container">
+                        <a-tooltip>
+                            <template #title>{{ item.rankText }}</template>
+                            <a-avatar size="large" shape="square" :src="getAssetsFile('rank/' + item.tier + '.png')"
+                                :alt="item.rankText"></a-avatar>
+                        </a-tooltip>
+
+                    </a-col>
+                    <a-col :span="14" class="justift-center-container">
+                        <a-row class="justift-left-element">
+                            <a-col style="text-align: right;" :span="3">
+                                <a-avatar class="small-items-container" :src="item.spell1Icon" alt="空"></a-avatar>
+                                <a-avatar class="small-items-container" :src="item.spell2Icon" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item0" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item1" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item2" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item3" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item4" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item5" alt="空"></a-avatar>
+                            </a-col>
+                            <a-col :span="3">
+                                <a-avatar class="square" shape="square" :src="item.item6" alt="空"></a-avatar>
+                            </a-col>
+                        </a-row>
+                    </a-col>
+                </a-row>
+            </a-col>
+        </a-row>
+    </a-spin>
+
 </template>
 <script setup>
-const testUrl = import.meta.env.VITE_BACK_URL + '/riot/ASSETS/items/icons2d/6672_marksman_t4_behemothslayer.png'
 import { getAssetsFile } from '@/utils/getAssetsUrl.js'
-import { onMounted, ref, nextTick, computed, watch } from 'vue';
-import { getGameDetail } from '@/api/bog'
+import { onMounted, ref, watch, defineEmits } from 'vue';
+import { getGameDetail, getMulGameRankHighest } from '@/api/bog'
 import dicts from '@/model/dicts/index'
 import moment from 'moment';
 import { createFromIconfontCN } from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 const IconFont = createFromIconfontCN({
     scriptUrl: import.meta.env.VITE_ICON_URL,
 });
-const count = 3;
-const initLoading = ref(true);
-const loading = ref(false);
+const props = defineProps(['gameId', 'puuid'])
+const initLoading = ref(false);
 const queueMap = dicts.getDict('queue');
+const queueTypeMap = dicts.getDict('queueType');
+const rankMap = dicts.getDict('rank')
 const spellMap = dicts.getFeDict('spell');
 const itemIconMap = dicts.getFeDict('gameItem');
-let { getters } = useStore()
+const allPuuids = ref([])
 
 // 定义基础数据
 const baseGameData = ref({
-    gameId: 0,
     queueId: '自选匹配',
     createTime: '01-01 00:00',
     gameDuration: 60,
@@ -121,12 +117,11 @@ const baseGameData = ref({
 })
 const teamInfo = ref([])
 const partMap = ref([])
-const gameDetailTeam1 = ref([])
-const gameDetailTeam2 = ref([])
-onMounted(() => {
-    getGameDetail(9248758356).then(res => {
+const fetchGameDetail = (gameId) => {
+    if (gameId === 0) return
+    initLoading.value = true
+    getGameDetail(gameId).then(res => {
         let baseData = {}
-        baseData.gameId = res.data.gameId
         baseData.queueId = queueMap[res.data.queueId]
         baseData.createTime = moment(res.data.gameCreation).format('MM-DD HH:mm')
         baseData.gameDuration = (res.data.gameDuration / 60).toFixed(1)
@@ -137,20 +132,29 @@ onMounted(() => {
         });
         baseGameData.value = baseData
         res.data.participantIdentities.forEach(element => {
-            partMap[element.participantId] = {
-                puuid: element.player.puuid,
-                gameName: element.player.gameName,
-                tagLine: element.player.tagLine,
+            if (element.player.summonerId === 0) {
+                partMap[element.participantId] = {
+                    puuid: element.player.puuid,
+                    gameName: '人机',
+                }
+            } else {
+                partMap[element.participantId] = {
+                    puuid: element.player.puuid,
+                    gameName: element.player.gameName + '#' + element.player.tagLine,
+                }
             }
+
         })
         let totalPart = []
         let tempPart1 = []
         let tempPart2 = []
+        let allPuuid = []
         let teamTotal1 = { teamId: 100, data: [], kills: 0, deaths: 0, assists: 0, goldEarned: 0 }
         let teamTotal2 = { teamId: 200, data: [], kills: 0, deaths: 0, assists: 0, goldEarned: 0 }
         res.data.participants.forEach(element => {
+
             let tempData = {
-                uuid: partMap[element.participantId].puuid,
+                puuid: partMap[element.participantId].puuid,
                 championId: element.championId,
                 championIcon: import.meta.env.VITE_BACK_URL + `/riot/v1/champion-icons/${element.championId}.png`,
                 spell1Icon: import.meta.env.VITE_BACK_URL + `/riot/DATA/Spells/Icons2D/${spellMap[element.spell1Id]}`,
@@ -160,7 +164,6 @@ onMounted(() => {
                 assists: element.stats.assists,
                 champLevel: element.stats.champLevel,
                 gameName: partMap[element.participantId].gameName,
-                tagLine: partMap[element.participantId].tagLine,
                 item0: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item0]}`,
                 item1: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item1]}`,
                 item2: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item2]}`,
@@ -170,13 +173,15 @@ onMounted(() => {
                 item6: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item6]}`,
                 goldEarned: element.stats.goldEarned,
                 totalDamageDealtToChampions: element.stats.totalDamageDealtToChampions,
+                tier: 'unranked',
+                rankText: '暂无排位记录',
             }
-            console.log('tempData', tempData)
             if (element.teamId === 100) {
                 tempPart1.push(tempData)
             } else {
                 tempPart2.push(tempData)
             }
+            allPuuid.push(tempData.puuid)
         })
         tempPart1.forEach(element => {
             teamTotal1.kills += element.kills
@@ -196,16 +201,56 @@ onMounted(() => {
             teamTotal2.data = tempPart2
             totalPart.push(teamTotal2)
         }
-        // gameDetailTeam1.value = tempPart1
-        // gameDetailTeam2.value = tempPart2
+        allPuuids.value = allPuuid
         teamInfo.value = totalPart
     }).finally(() => {
         initLoading.value = false
+        if (allPuuids.value.length > 0) {
+            getMulGameRankHighest(allPuuids.value).then(res => {
+                let allPuuidRankedStatus = {}
+                let temp = teamInfo.value
+                res.data.forEach(element => {
+                    allPuuidRankedStatus[element.puuid] = {
+                        division: element.data.division,
+                        tier: element.data.tier,
+                        queueType: element.data.queueType
+                    }
+                })
+                temp.forEach(element => {
+                    element.data.forEach(item => {
+                        if (allPuuidRankedStatus[item.puuid].tier !== '' && allPuuidRankedStatus[item.puuid].queueType !== 'RANKED_TFT') {
+                            let rankInfo = allPuuidRankedStatus[item.puuid]
+                            item.rankText = queueTypeMap[rankInfo.queueType] + ' ' + rankMap[rankInfo.tier] + (rankInfo.division == 'NA' ? '' : rankInfo.division)
+                            item.tier = rankInfo.tier.toLowerCase()
+                        }
+                    })
+                })
+                teamInfo.value = temp
+            })
+        }
+
     })
+}
+
+onMounted(() => {
+    fetchGameDetail(props.gameId)
 });
+
+watch(() => props.gameId, (newId, oldId) => {
+    fetchGameDetail(newId)
+})
+
 const backgroundColor = (cur, target) => {
     return cur === target ? 'fade-green-background' : 'fade-red-background';
 }
+const emit = defineEmits(['checkout-puuid']);
+
+const userClick = (puuid) => {
+    emit('checkout-puuid', puuid);
+};
+const isCurrentUser = (itemPuuid) => {
+    return itemPuuid === props.puuid;
+};
 </script>
 <style scoped>
 .justift-center-container {

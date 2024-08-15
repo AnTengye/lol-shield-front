@@ -43,7 +43,6 @@ export default defineComponent({
                 .then(response => response.json())
                 .then(res => {
                     const result = res.data;
-                    console.log('result', result)
                     const data = [];
                     for (var key in result) {
                         var value = result[key];

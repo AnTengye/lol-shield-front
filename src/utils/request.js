@@ -5,6 +5,11 @@ import { VueAxios } from './axios'
 const request = axios.create({
     // API 请求的默认前缀
     baseURL: import.meta.env.VITE_BACK_URL + '/v1'
+    // baseURL: 'http://127.0.0.1:4523/m1/4930153-4587449-7bd90a27'
+})
+
+const requestMock = axios.create({
+    baseURL: 'http://127.0.0.1:4523/m1/4930153-4587449-7bd90a27'
 })
 
 const localriotapi = axios.create({
@@ -30,6 +35,9 @@ request.interceptors.response.use((response) => {
 localriotapi.interceptors.response.use((response) => {
     return response.data
 }, errorHandler)
+requestMock.interceptors.response.use((response) => {
+    return response.data
+}, errorHandler)
 
 const installer = {
     vm: {},
@@ -43,5 +51,6 @@ export default request
 export {
     installer as VueAxios,
     request,
-    localriotapi
+    localriotapi,
+    requestMock
 }
