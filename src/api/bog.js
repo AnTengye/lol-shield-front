@@ -1,5 +1,5 @@
-import { request } from '@/utils/request'
-
+import { request, requestMock } from '@/utils/request'
+import qs from 'qs'
 
 export function getConfig() {
     return request.get('/config', {
@@ -38,12 +38,16 @@ export function getUser() {
     })
 }
 
-export function getGameList(uuid) {
-    return request.get('/history/' + uuid, {
+export function getGameList(uuid, page = 0, pageSize = 9) {
+    return request.get(`/history/${uuid}`, {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params: {
+            page,
+            pageSize
         }
-    })
+    });
 }
 
 export function getGameDetail(gameId) {
@@ -51,5 +55,43 @@ export function getGameDetail(gameId) {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8'
         }
+    })
+}
+export function getGameRankHighest(puuid) {
+    return request.get('rank/highest/' + puuid, {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    })
+}
+
+export function getMulGameRankHighest(...puuid) {
+    return request.get('rank/highest', {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params: {
+            puuid,
+        },
+        paramsSerializer: function (params) {
+            return qs.stringify(params, { arrayFormat: 'repeat' })
+        }
+    })
+}
+
+export function getGameRunning() {
+    return request.get('game/running', {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    })
+}
+
+
+export function getSkins() {
+    return request.get('skins', {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
     })
 }

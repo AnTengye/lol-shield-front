@@ -38,22 +38,24 @@
                     </a-menu-item>
                     <a-menu-item key="/"><router-link to="/">基础配置</router-link></a-menu-item>
                     <a-menu-item key="/rank"><router-link to="/rank">战绩</router-link></a-menu-item>
-                    <a-menu-item key="/detail"><router-link to="/detail">对局小助手</router-link></a-menu-item>
+                    <a-menu-item key="/running"><router-link to="/running">对局小助手</router-link></a-menu-item>
                 </a-menu>
             </a-layout-header>
-            <a-layout-content style="padding: 0 0px">
+            <a-layout-content class="scale-content">
                 <router-view />
             </a-layout-content>
-            <a-layout-footer style="text-align: center">
+            <a-layout-footer style="text-align: center;">
                 lol-shield ©2022 Created by AnTengye
             </a-layout-footer>
         </a-layout>
     </a-layout>
 </template>
 <script>
-import { defineComponent, ref, reactive, onMounted } from 'vue';
-import { getVersion, getUser } from '@/api/bog'
-import { connectSocket } from './websocket'
+import { defineComponent, ref, reactive, onMounted, watch } from 'vue';
+import { getVersion, getUser, getSkins } from '@/api/bog'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { createWebSocket } from './websocket/index'
 import dicts from '@/model/dicts/index'
 import {
     CheckCircleOutlined,
@@ -67,7 +69,9 @@ export default defineComponent({
         CloseCircleOutlined,
     },
     setup() {
-        connectSocket()
+        const router = useRouter()
+        const store = useStore()
+        createWebSocket(store)
         const status = reactive({
             online: '服务暂未启动',
             color: 'error',
@@ -79,50 +83,54 @@ export default defineComponent({
             level: 30,
             rank: '暂无数据'
         });
-        onMounted(async () => {
-            getVersion().then(res => {
-                status.version = res.data.version;
-            })
-        })
+        const uid = ref(0)
 
+
+        watch(() => store.getters['ws/getGameStatus'], (newStatus) => {
+            if (newStatus === 2) {
+                router.push('/running')
+            }
+        })
+        watch(() => store.getters['ws/getStatus'], (newOnline) => {
+            if (newOnline === 1) {
+                status.color = 'success'
+                status.online = '已连接客户端'
+                // 获取用户信息
+                getUser().then(res => {
+                    userInfo.icon = import.meta.env.VITE_BACK_URL + '/riot/v1/profile-icons/' + res.data.profileIconId + '.jpg'
+                    userInfo.name = res.data.gameName + '#' + res.data.tagLine
+                    userInfo.level = res.data.summonerLevel
+                    if (res.data.tier !== 'NA') {
+                        userInfo.rank = rank[res.data.tier] + res.data.division
+                    }
+                })
+                let skins = localStorage.getItem('skins')
+                if (skins === null) {
+                    getSkins().then(res => {
+                        localStorage.setItem('skins', JSON.stringify(res.data))
+                    })
+                }
+            } else if (newOnline === 2) {
+                status.color = 'processing'
+                status.online = '等待连接中'
+            } else {
+                status.color = 'error'
+                status.online = '服务暂未启动'
+            }
+            console.log('status change', status)
+        })
+        watch(() => store.getters['ws/getUid'], (newUid) => {
+            console.log('uid change', newUid)
+            uid.value = newUid
+        })
         const rank = dicts.getDict('rank')
         return {
             status,
             userInfo,
             // selectedKeys: ref(['1']),
-            rank
+            rank,
+            uid
         };
-    },
-    computed: {
-        online() {
-            return this.$store.state.ws.status;
-        },
-        uid() {
-            return this.$store.state.ws.uid;
-        },
-    },
-    watch: {
-        online() {
-            if (this.online === 1) {
-                this.status.color = 'success'
-                this.status.online = '已连接客户端'
-                // 获取用户信息
-                getUser().then(res => {
-                    this.userInfo.icon = import.meta.env.VITE_BACK_URL + '/riot/v1/profile-icons/' + res.data.profileIconId + '.jpg'
-                    this.userInfo.name = res.data.gameName + '#' + res.data.tagLine
-                    this.userInfo.level = res.data.summonerLevel
-                    if (res.data.tier !== 'NA') {
-                        this.userInfo.rank = this.rank[res.data.tier] + res.data.division
-                    }
-                })
-            } else if (this.online === 2) {
-                this.status.color = 'processing'
-                this.status.online = '等待连接中'
-            } else {
-                this.status.color = 'error'
-                this.status.online = '服务暂未启动'
-            }
-        },
     },
 });
 
@@ -190,5 +198,23 @@ export default defineComponent({
     /* 文本居中 */
     padding: 10px 0;
     /* 设置内边距 */
+}
+
+.scale-content {
+    position: relative;
+    /* padding-top: 56.25%; */
+    /* 16:9 的比例 */
+    /* min-width: 1920px; */
+    /* min-height: 1080px; */
+    width: calc(100%);
+    /* height: 70vh; */
+}
+
+.scale-content>* {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 </style>

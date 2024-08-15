@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import SettingPage from '../views/SettingFrom.vue';
 import RankList from '../views/RankList.vue';
-import RankDetail from '../views/RankDetail.vue';
+import RealTime from '../views/RealTime.vue';
 
 export default createRouter({
     history: createWebHistory(),
@@ -24,10 +24,10 @@ export default createRouter({
                     component: RankList,
                 },
                 {
-                    path: '/detail',
-                    name: 'RankDetail',
-                    meta: { title: '对局详情', icon: 'icon-icon-test' },
-                    component: RankDetail,
+                    path: '/running',
+                    name: 'RealTime',
+                    meta: { title: '实时对局', icon: 'icon-icon-test' },
+                    component: RealTime,
                 },
             ],
         },
