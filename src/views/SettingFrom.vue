@@ -39,7 +39,7 @@ export default defineComponent({
                 formState.autoPick = result.auto_pick;
                 formState.autoBan = result.auto_ban;
             })
-            fetch('public/champion.json')
+            fetch('/champion.json')
                 .then(response => response.json())
                 .then(res => {
                     const result = res.data;

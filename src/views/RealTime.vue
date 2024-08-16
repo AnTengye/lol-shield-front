@@ -109,7 +109,7 @@ const skinMap = JSON.parse(localStorage.getItem('skins'))
 // 地图数据
 const queueId = ref(0);
 const backgroundUrl = computed(() => {
-    return queueId.value === 450 ? 'public/aram.png' : 'public/classic.png';
+    return queueId.value === 450 ? '/aram.png' : '/classic.png';
 })
 // 多选
 const plainOptions = ['战绩', '段位'];

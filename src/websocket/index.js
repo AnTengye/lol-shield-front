@@ -19,7 +19,6 @@ export const createWebSocket = (store) => {
 
         // WebSocket 收到消息事件
         ws.onmessage = function (msg) {
-            console.log("后端推送：" + msg.data);
             if (store) {
                 store.commit('ws/setWsRes', JSON.parse(msg.data ?? '{}'));
             }

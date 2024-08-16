@@ -10,7 +10,7 @@
                 <a-card-meta :title="userInfo.name" class="custom-card-meta">
                     <template #description>
                         <p class="custom-description">召唤师等级：{{ userInfo.level }}</p>
-                        <p class="custom-description">近20场胜率：52%</p>
+                        <!-- <p class="custom-description">近20场胜率：52%</p> -->
                         <p class="custom-description">单双段位：{{ userInfo.rank }}</p>
                     </template>
                 </a-card-meta>
@@ -91,6 +91,16 @@ export default defineComponent({
                 router.push('/running')
             }
         })
+        watch(() => store.getters['ws/getSkinSync'], (newStatus) => {
+            if (newStatus === 1) {
+                let skins = localStorage.getItem('skins')
+                if (skins === null || skins === {}) {
+                    getSkins().then(res => {
+                        localStorage.setItem('skins', JSON.stringify(res.data))
+                    })
+                }
+            }
+        })
         watch(() => store.getters['ws/getStatus'], (newOnline) => {
             if (newOnline === 1) {
                 status.color = 'success'
@@ -104,12 +114,7 @@ export default defineComponent({
                         userInfo.rank = rank[res.data.tier] + res.data.division
                     }
                 })
-                let skins = localStorage.getItem('skins')
-                if (skins === null) {
-                    getSkins().then(res => {
-                        localStorage.setItem('skins', JSON.stringify(res.data))
-                    })
-                }
+
             } else if (newOnline === 2) {
                 status.color = 'processing'
                 status.online = '等待连接中'
