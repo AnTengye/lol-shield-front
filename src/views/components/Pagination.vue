@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue';
 import { h } from 'vue';
 const props = defineProps({

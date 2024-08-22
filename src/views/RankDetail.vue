@@ -12,7 +12,7 @@
             </a-col>
         </a-row>
         <a-row v-for="team in teamInfo">
-            <a-col :class="backgroundColor(team.teamId, baseGameData.winTeamId)" :span="12">
+            <a-col :class="backgroundColor(team.teamId, baseGameData.winTeamId)" :span="24">
                 <a-row style="height: 30px;" justify="space-around">
                     <a-col class="justift-center-container" :span="8">
                         <div class="defeat" v-if="baseGameData.winTeamId !== team.teamId">失败</div>
@@ -25,19 +25,19 @@
                     </a-col>
                     <a-col class="justift-center-container" :span="8">
                         <div style="font-size: 18px;"><icon-font :style="{ fontSize: '20px' }" type="icon-jinbi" />{{
-                            (team.goldEarned / 1000).toFixed(1) }}k
+                            formatNumber(team.goldEarned) }}
                         </div>
                     </a-col>
                 </a-row>
-                <a-row v-for="item in team.data" :key="item.puuid">
-                    <a-col :span="4" class="justift-center-container">
+                <a-row v-for="item in team.data" :key="item.puuid" justify="space-around">
+                    <a-col :span="2" class="justift-center-container">
                         <a-badge class="badge-level" :count="item.champLevel" :offset="[-8, 35]" color="orange">
                             <a-avatar shape="square" :src="item.championIcon" size="large" alt="空"></a-avatar>
                         </a-badge>
                         <p style="margin: 32px 0 0 0;font-size: 16px;">{{ item.kills }}-{{ item.deaths }}-{{
                             item.assists }}</p>
                     </a-col>
-                    <a-col :span="4" class="justift-center-container">
+                    <a-col :span="2" class="justift-center-container">
                         <a-tooltip>
                             <template #title>{{ item.gameName }}</template>
                             <div class="text-overflow-container"
@@ -45,7 +45,7 @@
                                 @click="userClick(item.puuid)">{{ item.gameName }}</div>
                         </a-tooltip>
                     </a-col>
-                    <a-col :span="2" class="justift-center-container">
+                    <a-col :span="1" class="justift-center-container">
                         <a-tooltip>
                             <template #title>{{ item.rankText }}</template>
                             <a-avatar size="large" shape="square" :src="getAssetsFile('rank/' + item.tier + '.png')"
@@ -53,7 +53,7 @@
                         </a-tooltip>
 
                     </a-col>
-                    <a-col :span="14" class="justift-center-container">
+                    <a-col :span="7" class="justift-center-container">
                         <a-row class="justift-left-element">
                             <a-col style="text-align: right;" :span="3">
                                 <a-avatar class="small-items-container" :src="item.spell1Icon" alt="空"></a-avatar>
@@ -79,6 +79,89 @@
                             </a-col>
                             <a-col :span="3">
                                 <a-avatar class="square" shape="square" :src="item.item6" alt="空"></a-avatar>
+                            </a-col>
+                        </a-row>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-row justify="space-around" align="middle">
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.kda === allTotalMal.kda }">
+                                    <div>KDA</div>
+                                    <div>{{ item.kda.toFixed(1) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.goldEarned === allTotalMal.goldEarned }">
+                                    <div>经济</div>
+                                    <div>{{ formatNumber(item.goldEarned) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px; "
+                                    :class="{ maxScore: item.totalDamageDealtToChampions === allTotalMal.totalDamageDealtToChampions }">
+                                    <div>伤害</div>
+                                    <div>{{ formatNumber(item.totalDamageDealtToChampions) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.totalDamageTaken === allTotalMal.totalDamageTaken }">
+                                    <div>承伤</div>
+                                    <div>{{ formatNumber(item.totalDamageTaken) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.damageDealtToObjectives === allTotalMal.damageDealtToObjectives }">
+                                    <div>资源</div>
+                                    <div>{{ formatNumber(item.damageDealtToObjectives) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.timeCCingOthers === allTotalMal.timeCCingOthers }">
+                                    <div>控制</div>
+                                    <div>{{ formatNumber(item.timeCCingOthers) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="2" align="middle">
+                                <div style="margin-top: 10px; font-size: 14px;"
+                                    :class="{ maxScore: item.visionScore === allTotalMal.visionScore }">
+                                    <div>视野</div>
+                                    <div>{{ formatNumber(item.visionScore) }}</div>
+                                </div>
+                            </a-col>
+                            <a-col :span="10">
+                                <a-flex gap="small">
+                                    <a-tooltip v-if="allTotalMal.kda === item.kda">
+                                        <template #title>MVP</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-crown" />
+                                    </a-tooltip>
+                                    <a-tooltip v-if="allTotalMal.goldEarned === item.goldEarned">
+                                        <template #title>钱钱钱！！！</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-a-poker1" />
+                                    </a-tooltip>
+                                    <a-tooltip
+                                        v-if="allTotalMal.totalDamageDealtToChampions === item.totalDamageDealtToChampions">
+                                        <template #title>砍人最狠的</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-knief-2eps" />
+                                    </a-tooltip>
+                                    <a-tooltip v-if="allTotalMal.totalDamageTaken === item.totalDamageTaken">
+                                        <template #title>被砍的最狠</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-armour" />
+                                    </a-tooltip>
+                                    <a-tooltip v-if="allTotalMal.assists === item.assists">
+                                        <template #title>能蹭一个是一个</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-like" />
+                                    </a-tooltip>
+                                    <a-tooltip v-if="item.pentaKills === 1">
+                                        <template #title>啊？五杀？</template>
+                                        <icon-font :style="{ fontSize: '25px' }" type="icon-wusha" />
+                                    </a-tooltip>
+                                </a-flex>
+
                             </a-col>
                         </a-row>
                     </a-col>
@@ -116,6 +199,7 @@ const baseGameData = ref({
     winTeamId: 100,
 })
 const teamInfo = ref([])
+const allTotalMal = ref({})
 const partMap = ref([])
 const fetchGameDetail = (gameId) => {
     if (gameId === 0) return
@@ -152,8 +236,13 @@ const fetchGameDetail = (gameId) => {
         let teamTotal1 = { teamId: 100, data: [], kills: 0, deaths: 0, assists: 0, goldEarned: 0 }
         let teamTotal2 = { teamId: 200, data: [], kills: 0, deaths: 0, assists: 0, goldEarned: 0 }
         res.data.participants.forEach(element => {
-
+            let deaths = element.stats.deaths
+            if (deaths === 0) {
+                deaths = 1
+            }
+            let kda = (element.stats.kills + element.stats.assists) / deaths
             let tempData = {
+                teamId: element.teamId,
                 puuid: partMap[element.participantId].puuid,
                 championId: element.championId,
                 championIcon: import.meta.env.VITE_BACK_URL + `/riot/v1/champion-icons/${element.championId}.png`,
@@ -162,6 +251,7 @@ const fetchGameDetail = (gameId) => {
                 kills: element.stats.kills,
                 deaths: element.stats.deaths,
                 assists: element.stats.assists,
+                kda: parseFloat(kda.toFixed(1)),
                 champLevel: element.stats.champLevel,
                 gameName: partMap[element.participantId].gameName,
                 item0: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item0]}`,
@@ -172,7 +262,12 @@ const fetchGameDetail = (gameId) => {
                 item5: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item5]}`,
                 item6: import.meta.env.VITE_BACK_URL + `/riot/ASSETS/items/icons2d/${itemIconMap[element.stats.item6]}`,
                 goldEarned: element.stats.goldEarned,
-                totalDamageDealtToChampions: element.stats.totalDamageDealtToChampions,
+                totalDamageDealtToChampions: element.stats.totalDamageDealtToChampions,// 伤害
+                totalDamageTaken: element.stats.totalDamageTaken, // 承伤
+                damageDealtToObjectives: element.stats.damageDealtToObjectives,// 资源
+                visionScore: element.stats.visionScore, // 视野
+                timeCCingOthers: element.stats.timeCCingOthers, // 控制
+                pentaKills: element.stats.pentaKills > 0 ? 1 : 0,
                 tier: 'unranked',
                 rankText: '暂无排位记录',
             }
@@ -190,6 +285,7 @@ const fetchGameDetail = (gameId) => {
             teamTotal1.goldEarned += element.goldEarned
         })
         teamTotal1.data = tempPart1
+        teamTotal1.maxData = computedMax(tempPart1)
         totalPart.push(teamTotal1)
         if (tempPart2.length > 0) {
             tempPart2.forEach(element => {
@@ -199,8 +295,11 @@ const fetchGameDetail = (gameId) => {
                 teamTotal2.goldEarned += element.goldEarned
             })
             teamTotal2.data = tempPart2
+            teamTotal2.maxData = computedMax(tempPart2)
             totalPart.push(teamTotal2)
         }
+        allTotalMal.value = computedMax([...tempPart1, ...tempPart2])
+        console.log('allTotalMal', allTotalMal.value)
         allPuuids.value = allPuuid
         teamInfo.value = totalPart
     }).finally(() => {
@@ -251,6 +350,27 @@ const userClick = (puuid) => {
 const isCurrentUser = (itemPuuid) => {
     return itemPuuid === props.puuid;
 };
+const formatNumber = (num) => {
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    } else {
+        return num.toString();
+    }
+}
+
+const computedMax = (data) => {
+    // 需要计算的属性
+    let attr = new Set(['kills', 'deaths', 'assists', 'goldEarned', 'kda', 'totalDamageDealtToChampions', 'totalDamageTaken', 'visionScore', 'timeCCingOthers', 'damageDealtToObjectives']);
+    let maxValues = data.reduce((acc, current) => {
+        Object.keys(current).forEach(key => {
+            if (attr.has(key) && !acc[key] || current[key] > acc[key]) {
+                acc[key] = current[key];
+            }
+        });
+        return acc;
+    }, {});
+    return { ...maxValues };
+}
 </script>
 <style scoped>
 .justift-center-container {
@@ -319,5 +439,10 @@ const isCurrentUser = (itemPuuid) => {
     font-weight: bold;
     color: rgb(199, 33, 33);
     font-size: 16px;
+}
+
+.maxScore {
+    color: rgb(74, 198, 236);
+    font-weight: bold;
 }
 </style>

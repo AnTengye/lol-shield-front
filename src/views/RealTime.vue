@@ -201,6 +201,7 @@ const fetchRunningData = () => {
         allPuuids.value = allPuuid
         teamInfo.value = [blue, red]
         gameStarted.value = true
+        queueId.value = res.data.queueId
     }).finally(() => {
         initLoading.value = false
         if (allPuuids.value.length > 0) {
